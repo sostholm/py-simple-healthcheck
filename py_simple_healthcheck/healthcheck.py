@@ -1,15 +1,21 @@
 from time import time
+from sys import platform
+
+if platform == 'linux' or platform == 'linux2':
+    filepath = '/tmp/py_simple_healthcheck'
+else:
+    filepath = 'py_simple_healthcheck'
 
 class UnhealthyException(Exception):
     pass
 
 def health_check(timeout):
-    with open('/tmp/py_simple_healthcheck', 'w+') as file:
+    with open(filepath, 'w+') as file:
         file.write(f'{str(int(time()))},{str(timeout)}')
 
 def is_healthy():
     try:
-        with open('/tmp/py_simple_healthcheck', 'r') as file:
+        with open(filepath, 'r') as file:
             content = file.read()
             timestamp, timeout = content.split(',')
             if time() > int(timestamp) + int(timeout):
